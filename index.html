@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filter Tanggal Akhir Pekan</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Filter Tanggal Akhir Pekan</h2>
+    <form id="dateForm">
+        <label for="startDate">Tanggal Awal:</label>
+        <input type="date" id="startDate" name="startDate" required>
+        <label for="endDate">Tanggal Akhir:</label>
+        <input type="date" id="endDate" name="endDate" required>
+        <button type="submit">Filter</button>
+    </form>
+    <div id="weekendDates"></div>
+
+    <script>
+        function isWeekend(date) {
+            const day = date.getDay();
+            return (day === 0 || day === 6);
+        }
+
+        function filterWeekends(startDate, endDate) {
+            let currentDate = new Date(startDate);
+            const endDateObj = new Date(endDate);
+
+            let weekendDates = [];
+
+            while (currentDate <= endDateObj) {
+                if (isWeekend(currentDate)) {
+                    weekendDates.push(new Date(currentDate));
+                }
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+
+            return weekendDates;
+        }
+
+        const form = document.getElementById('dateForm');
+        const weekendDatesDiv = document.getElementById('weekendDates');
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const startDate = form.startDate.value;
+            const endDate = form.endDate.value;
+
+            const weekends = filterWeekends(startDate, endDate);
+
+            let html = '<h3>Weekend Dates:</h3><ul>';
+            weekends.forEach(function(date) {
+                html += `<li>${date.toDateString()}</li>`;
+            });
+            html += '</ul>';
+
+            weekendDatesDiv.innerHTML = html;
+        });
+    </script>
+</body>
+</html>
